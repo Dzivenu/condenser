@@ -73,7 +73,6 @@ async function appRender(ctx) {
             }
         }
         // ... and that's the end of user-session-related SSR
-
         const initial_state = {
             app: {
                 viewMode: determineViewMode(ctx.request.search),
@@ -90,6 +89,7 @@ async function appRender(ctx) {
         });
 
         // Assets name are found in `webpack-stats` file
+        /*
         const assets_filename =
             ROOT +
             (process.env.NODE_ENV === 'production'
@@ -97,10 +97,26 @@ async function appRender(ctx) {
                 : '/tmp/webpack-stats-dev.json');
         const assets = require(assets_filename);
 
+        const assets = {
+          "script": [
+            "/assets/vendor.fd7789931185cb2ac218.js",
+            "/assets/app.fd7789931185cb2ac218.js"
+           ],
+           "style": [
+               "/assets/app-ef6e88f0f3676579ac28.css"
+           ],
+        }
+        */
+
+        const assets = require(ROOT + 'assets');
+        debugger;
+
         // Don't cache assets name on dev
+        /*
         if (process.env.NODE_ENV === 'development') {
             delete require.cache[require.resolve(assets_filename)];
         }
+        */
 
         const props = { body, assets, title, meta };
         ctx.status = statusCode;
