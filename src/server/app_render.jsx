@@ -14,22 +14,8 @@ const ROOT = path.join(__dirname, '../..');
 const DB_RECONNECT_TIMEOUT =
     process.env.NODE_ENV === 'development' ? 1000 * 60 * 60 : 1000 * 60 * 10;
 
-//TODO: this is another potential source of FS performance woes.
-function getSupportedLocales() {
-    const locales = [];
-    const files = fs.readdirSync(path.join(ROOT, 'src/app/locales'));
-    for (const filename of files) {
-        const match_res = filename.match(/(\w+)\.json?$/);
-        if (match_res) locales.push(match_res[1]);
-    }
-    return locales;
-}
-
-const supportedLocales = getSupportedLocales();
-
-async function appRender(ctx, assets, assets_filename) {
+async function appRender(ctx, assets, assets_filename, supportedLocales) {
     const store = {};
-
     // This is the part of SSR where we make session-specific changes:
     try {
         let userPreferences = {};
