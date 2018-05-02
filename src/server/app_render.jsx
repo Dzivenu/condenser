@@ -14,6 +14,7 @@ const ROOT = path.join(__dirname, '../..');
 const DB_RECONNECT_TIMEOUT =
     process.env.NODE_ENV === 'development' ? 1000 * 60 * 60 : 1000 * 60 * 10;
 
+//TODO: this is another potential source of FS performance woes.
 function getSupportedLocales() {
     const locales = [];
     const files = fs.readdirSync(path.join(ROOT, 'src/app/locales'));
@@ -26,7 +27,7 @@ function getSupportedLocales() {
 
 const supportedLocales = getSupportedLocales();
 
-async function appRender(ctx) {
+async function appRender(ctx, assets, assets_filename) {
     const store = {};
 
     // This is the part of SSR where we make session-specific changes:
@@ -87,37 +88,11 @@ async function appRender(ctx) {
             userPreferences,
             offchain,
         });
-
-        // Assets name are found in `webpack-stats` file
-        /*
-        const assets_filename =
-            ROOT +
-            (process.env.NODE_ENV === 'production'
-                ? '/tmp/webpack-stats-prod.json'
-                : '/tmp/webpack-stats-dev.json');
-        const assets = require(assets_filename);
-
-        const assets = {
-          "script": [
-            "/assets/vendor.fd7789931185cb2ac218.js",
-            "/assets/app.fd7789931185cb2ac218.js"
-           ],
-           "style": [
-               "/assets/app-ef6e88f0f3676579ac28.css"
-           ],
-        }
-        */
-
-        const assets = require(ROOT + 'assets');
-        debugger;
-
         // Don't cache assets name on dev
-        /*
+        // TODO: Investigate removing this.
         if (process.env.NODE_ENV === 'development') {
             delete require.cache[require.resolve(assets_filename)];
         }
-        */
-
         const props = { body, assets, title, meta };
         ctx.status = statusCode;
         ctx.body =

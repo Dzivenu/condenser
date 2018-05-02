@@ -78,6 +78,14 @@ if (env === 'development') {
     );
 }
 
+// Get the paths to the compiled JS and CSS here from webpack manifest.
+const assets_filename =
+    ROOT +
+    (process.env.NODE_ENV === 'production'
+        ? '/tmp/webpack-stats-prod.json'
+        : '/tmp/webpack-stats-dev.json');
+const assets = require(assets_filename);
+
 app.use(isBot());
 
 // set number of processes equal to number of cores
@@ -257,8 +265,9 @@ if (env === 'production') {
 
 if (env !== 'test') {
     const appRender = require('./app_render');
+    // Get path to compiled
     app.use(function*() {
-        yield appRender(this);
+        yield appRender(this, assets, assets_filename);
         // if (app_router.dbStatus.ok) recordWebEvent(this, 'page_load');
         const bot = this.state.isBot;
         if (bot) {
