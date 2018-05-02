@@ -78,6 +78,7 @@ if (env === 'development') {
     );
 }
 
+const ROOT = path.join(__dirname, '../..');
 // Get the paths to the compiled JS and CSS here from webpack manifest.
 const assets_filename =
     ROOT +
